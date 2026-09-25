@@ -3,6 +3,12 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
+    inputs:
+      published-tag:
+        description: 'Tag of the published image to smoke test anonymously (empty to skip)'
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -15,7 +21,9 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Validate renovate.json
-        run: python -c "import json; json.load(open('renovate.json'))"
+        run: |
+          python -c "import json; json.load(open('renovate.json'))"
+          python -c "import json; json.load(open('.github/changelog-configuration.json'))"
 
       - name: Build Dockerfile
         run: docker build -t bacluc/ask-ai:test .
@@ -24,4 +32,13 @@ jobs:
         run: docker run --rm bacluc/ask-ai:test --version
 
       - name: Run under arbitrary numeric UID
-        run: docker run --rm --user 12345 bacluc/ask-ai:test --version
+        run: docker run --rm --user 12345:12345 bacluc/ask-ai:test --version
+
+  published-image:
+    if: ${{ inputs.published-tag != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run published image anonymously
+        run: |
+          docker logout ghcr.io || true
+          docker run --rm "ghcr.io/bacluc-agent/ask-ai:${{ inputs.published-tag }}" --version

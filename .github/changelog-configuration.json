@@ -1,14 +1,33 @@
 {
+  "pr_template": "- ${{TITLE}} (#${{NUMBER}})",
   "categories": [
-    "Added",
-    "Changed",
-    "Deprecated",
-    "Removed",
-    "Fixed",
-    "Security"
+    {
+      "title": "## 🚀 Features",
+      "labels": ["enhancement", "feature"]
+    },
+    {
+      "title": "## 🛠️ Minor Changes",
+      "labels": ["change"]
+    },
+    {
+      "title": "## 🔎 Breaking Changes",
+      "labels": ["breaking"]
+    },
+    {
+      "title": "## 🐛 Fixes",
+      "labels": ["bug", "fix"]
+    },
+    {
+      "title": "## 📄 Documentation",
+      "labels": ["documentation"]
+    },
+    {
+      "title": "## 🔗 Dependency Updates",
+      "labels": ["dependency"]
+    },
+    {
+      "title": "## 📦 Other Changes"
+    }
   ],
-  "versioning": {
-    "pattern": "v(?<version>.*)",
-    "order": "asc"
-  }
+  "template": "${{CATEGORIZED_COUNT}} changes since ${{FROM_TAG}}\n\n${{CHANGELOG}}"
 }

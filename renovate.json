@@ -3,15 +3,15 @@
   "extends": ["config:recommended"],
   "minimumReleaseAge": "14 days",
   "automerge": true,
-  "labels": ["dependencies"],
+  "labels": ["dependency"],
   "packageRules": [
     {
       "matchUpdateTypes": ["major"],
-      "labels": ["bump:major", "enhancement"]
+      "labels": ["bump:major"]
     },
     {
       "matchUpdateTypes": ["minor"],
-      "labels": ["bump:minor", "enhancement"]
+      "labels": ["bump:minor"]
     },
     {
       "matchUpdateTypes": ["patch"],
@@ -21,39 +21,10 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [".*"],
+      "managerFilePatterns": ["Dockerfile"],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>[^\\s]+) depName=(?<depName>[^\\s]+)\\n[A-Z_]+=(?<currentValue>[0-9][\\w.-]*)"
+        "# renovate: datasource=(?<datasource>[^\\s]+) depName=(?<depName>[^\\s]+)\\nARG AICHAT_VERSION=(?<currentValue>[0-9][\\w.-]*)\\nARG AICHAT_SHA256=(?<currentDigest>[a-f0-9]{64})"
       ]
-    },
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["Dockerfile"],
-      "matchStrings": [
-        "# renovate: datasource=docker depName=alpine\\nARG ALPINE_VERSION=(?<currentValue>[0-9][\\w.-]*)"
-      ],
-      "datasourceTemplate": "docker",
-      "depNameTemplate": "alpine"
-    },
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["Dockerfile"],
-      "matchStrings": [
-        "# renovate: datasource=github-release-attachments depName=sigoden/aichat\\nARG AICHAT_VERSION=(?<currentValue>[0-9][\\w.-]*)"
-      ],
-      "datasourceTemplate": "github-release-attachments",
-      "depNameTemplate": "sigoden/aichat",
-      "currentValueTemplate": "{{tag}}"
-    },
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["Dockerfile"],
-      "matchStrings": [
-        "# renovate: datasource=github-release-attachments depName=sigoden/aichat\\nARG AICHAT_SHA256=(?<currentDigest>[a-f0-9]{64})"
-      ],
-      "datasourceTemplate": "github-release-attachments",
-      "depNameTemplate": "sigoden/aichat",
-      "currentDigestTemplate": "{{checksum}}"
     }
   ]
 }
