@@ -17,3 +17,4 @@ docker run --rm -it \
 - **Renovate**: updates Alpine base image, aichat version, and SHA-256 checksum automatically.
 
 This repository is created and maintained by BacLuc. It uses automated dependency updates via Renovate and automated releases via GitHub Actions. This image is provided as-is without warranty; verify all downloaded artifacts independently.
+# Issue 273 - ask-ai container
