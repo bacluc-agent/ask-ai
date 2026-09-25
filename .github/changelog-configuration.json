@@ -1,0 +1,14 @@
+{
+  "categories": [
+    "Added",
+    "Changed",
+    "Deprecated",
+    "Removed",
+    "Fixed",
+    "Security"
+  ],
+  "versioning": {
+    "pattern": "v(?<version>.*)",
+    "order": "asc"
+  }
+}
