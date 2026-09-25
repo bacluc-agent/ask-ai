@@ -1,38 +1,25 @@
-name: Auto Release
+name: Autorelease
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/release.yaml'
-  workflow_dispatch:
-    inputs:
-      bump:
-        description: 'Bump type (patch/minor/major)'
-        required: true
-        default: 'patch'
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
+  pull_request:
+    types:
+      - synchronize
+      - labeled
+      - unlabeled
+      - closed
 
-permissions:
-  actions: write
-  contents: write
-  pull-requests: write
+permissions: {}
 
 jobs:
-  trigger-release:
+  create-release-tag:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: write
     steps:
-      - name: Check out repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Dispatch Release workflow
-        uses: peter-evans/repository-dispatch@b7037b45472c64c96f5a28a8c8443a7d5a237848 # v3.0.0
+      - name: Create new tag
+        uses: projectsyn/pr-label-tag-action@796e1eaeafa4de313848e03bd5341d55a08a596d # v1.3.1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          event-type: release
-          client-payload: '{"bump":"${{ github.event.inputs.bump || "patch" }}"}'
+          trigger: |
+            Release
