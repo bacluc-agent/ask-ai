@@ -7,14 +7,17 @@
   "packageRules": [
     {
       "matchUpdateTypes": ["major"],
+      "matchFileNames": ["Dockerfile"],
       "labels": ["bump:major"]
     },
     {
       "matchUpdateTypes": ["minor"],
+      "matchFileNames": ["Dockerfile"],
       "labels": ["bump:minor"]
     },
     {
       "matchUpdateTypes": ["patch"],
+      "matchFileNames": ["Dockerfile"],
       "labels": ["bump:patch"]
     }
   ],
