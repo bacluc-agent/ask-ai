@@ -22,7 +22,7 @@ jobs:
 
       - name: Validate renovate.json
         run: |
-          python -c "import json; json.load(open('renovate.json'))"
+          npx --yes --package renovate renovate-config-validator renovate.json
           python -c "import json; json.load(open('.github/changelog-configuration.json'))"
 
       - name: Build Dockerfile
