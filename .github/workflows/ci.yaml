@@ -25,6 +25,30 @@ jobs:
           python -c "import json; json.load(open('renovate.json'))"
           python -c "import json; json.load(open('.github/changelog-configuration.json'))"
 
+      - name: Extract and look up Renovate dependencies
+        env:
+          RENOVATE_GITHUB_COM_TOKEN: ${{ github.token }}
+        run: |
+          set -o pipefail
+          docker run --rm \
+            -e RENOVATE_DRY_RUN=lookup \
+            -e RENOVATE_GITHUB_COM_TOKEN \
+            -e RENOVATE_LOG_LEVEL=debug \
+            -e RENOVATE_ONBOARDING=false \
+            -e RENOVATE_PLATFORM=local \
+            -e RENOVATE_REPOSITORY_CACHE=reset \
+            -e RENOVATE_REQUIRE_CONFIG=ignored \
+            -v "$GITHUB_WORKSPACE:/work:ro" \
+            -w /work \
+            renovate/renovate:41.159.4 | tee renovate-lookup.log
+          python - <<'PY'
+          from pathlib import Path
+
+          output = Path("renovate-lookup.log").read_text()
+          for dependency in ("alpine", "sigoden/aichat", "actions/checkout"):
+              assert dependency in output, dependency
+          PY
+
       - name: Build Dockerfile
         run: docker build -t bacluc/ask-ai:test .
 
