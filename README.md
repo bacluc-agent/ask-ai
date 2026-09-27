@@ -28,18 +28,24 @@ both whenever a newer `aichat` release is at least 14 days old.
 
 ## Workflows
 
-- `Autorelease` (`.github/workflows/auto-release.yaml`): on every merge of a pull request
-  labelled `bump:patch`, `bump:minor` or `bump:major`, the
-  [pr-label-tag-action](https://github.com/projectsyn/pr-label-tag-action) creates the next
-  `v*` tag and dispatches `Release`.
+- `Autorelease` (`.github/workflows/auto-release.yaml`): `bump:patch`, `bump:minor` and
+  `bump:major` are the user-facing signal for a Dockerfile/published-image change. Only
+  dependency updates that change `Dockerfile` (the Alpine base image,
+  `AICHAT_VERSION` or `AICHAT_SHA256`) carry a `bump:*` label. On a merged labelled pull
+  request, the [pr-label-tag-action](https://github.com/projectsyn/pr-label-tag-action)
+  creates the next `v*` tag and dispatches `Release`, which builds and publishes the image
+  and creates the GitHub release. Pull requests changing only `.github/**` or `renovate.json`
+  (including Renovate `github-actions` and `renovate-config` updates) get `dependency` only
+  and never bump, tag, publish or release.
 - `Release` (`.github/workflows/release.yaml`): triggered by a `v*` tag, builds the image
   for `linux/amd64` and publishes `ghcr.io/bacluc-agent/ask-ai:<version-without-v>` and
   `ghcr.io/bacluc-agent/ask-ai:latest`, then creates the GitHub release with a changelog
   built from the merged pull requests and their labels.
 - `CI` (`.github/workflows/ci.yaml`): validates `renovate.json`, builds the image, runs
   `aichat --version`, and repeats that under an arbitrary numeric user id.
-- Renovate ([`renovate.json`](renovate.json)) keeps the base image and the pinned `aichat`
-  release current.
+- Renovate ([`renovate.json`](renovate.json)) opens and automerges Alpine base-image and
+  pinned `aichat` Dockerfile updates after the minimum release age of 14 days; workflow and
+  configuration updates get dependency only and never release.
 
 ## License
 
