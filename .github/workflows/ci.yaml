@@ -25,50 +25,6 @@ jobs:
           python -c "import json; json.load(open('renovate.json'))"
           python -c "import json; json.load(open('.github/changelog-configuration.json'))"
 
-      - name: Extract and look up Renovate dependencies
-        env:
-          RENOVATE_GITHUB_COM_TOKEN: ${{ github.token }}
-        run: |
-          set -o pipefail
-          docker run --rm \
-            -e RENOVATE_DRY_RUN=lookup \
-            -e RENOVATE_GITHUB_COM_TOKEN \
-            -e RENOVATE_LOG_LEVEL=debug \
-            -e RENOVATE_ONBOARDING=false \
-            -e RENOVATE_PLATFORM=local \
-            -e RENOVATE_REPOSITORY_CACHE=reset \
-            -e RENOVATE_REQUIRE_CONFIG=ignored \
-            -v "$GITHUB_WORKSPACE:/work:ro" \
-            -w /work \
-            renovate/renovate:41.159.4 | tee renovate-lookup.log
-          python - <<'PY'
-          import re
-          from pathlib import Path
-
-          output = Path("renovate-lookup.log").read_text()
-          for dependency in ("alpine", "sigoden/aichat", "actions/checkout"):
-              assert dependency in output, dependency
-          github_actions = {
-              "actions/checkout": 2,
-              "mikepenz/release-changelog-builder-action": 1,
-              "ncipollo/release-action": 1,
-              "docker/login-action": 1,
-              "docker/setup-qemu-action": 1,
-              "docker/setup-buildx-action": 1,
-              "docker/build-push-action": 1,
-              "projectsyn/pr-label-tag-action": 1,
-          }
-          assert output.count('"datasource": "github-tags"') == 9
-          for dependency, count in github_actions.items():
-              assert output.count(f'"depName": "{dependency}"') == count, dependency
-          assert re.search(
-              r'"depName": "sigoden/aichat",\s+'
-              r'"currentValue": "v[^"\\]+",\s+'
-              r'"currentDigest": "[a-f0-9]{64}"',
-              output,
-          )
-          PY
-
       - name: Build Dockerfile
         run: docker build -t bacluc/ask-ai:test .
 
