@@ -24,8 +24,10 @@ config from, so the read-only mount keeps the container from writing to your hos
 
 Available tags: `0.0.1` and `latest`. Renovate tracks the Alpine base image and the
 `aichat` version plus its SHA-256 checksum. It opens and automerges dependency PRs for
-Alpine and `aichat` Dockerfile updates; workflow or `renovate.json` updates get dependency
-only and never bump the image version.
+Alpine and `aichat` Dockerfile updates; only major, minor, or patch updates to those
+Dockerfile dependencies can carry a bump label. A checksum-only `pinDigest` update,
+or a workflow or `renovate.json` update, remains dependency-only and never bumps the
+image version.
 
 ## Workflows
 
@@ -33,8 +35,9 @@ only and never bump the image version.
   is the “user facing change” signal causing the
   [pr-label-tag-action](https://github.com/projectsyn/pr-label-tag-action) to create the next
   `v*` tag and dispatch `Release`. Only Dockerfile dependency updates (Alpine base image,
-  pinned `aichat` release + checksum) carry it; CI/workflow-only or `renovate.json`-only PRs
-  get dependency only and never create a tag, publish an image, or release.
+  pinned `aichat` release + checksum) with a major, minor, or patch update can carry it;
+  checksum-only `pinDigest`, CI/workflow-only, or `renovate.json`-only PRs get dependency
+  only and never create a tag, publish an image, or release.
 - `Release` (`.github/workflows/release.yaml`): triggered by a `v*` tag, builds the image
   for `linux/amd64` and publishes `ghcr.io/bacluc-agent/ask-ai:<version-without-v>` and
   `ghcr.io/bacluc-agent/ask-ai:latest`, then creates the GitHub release with a changelog
@@ -42,7 +45,8 @@ only and never bump the image version.
 - `CI` (`.github/workflows/ci.yaml`): validates `renovate.json`, builds the image, runs
   `aichat --version`, and repeats that under an arbitrary numeric user id.
 - Renovate ([`renovate.json`](renovate.json)) opens and automerges Alpine and pinned `aichat`
-  Dockerfile updates; workflow and `renovate.json` updates never bump the image version.
+  Dockerfile dependency updates; only major, minor, or patch updates receive bump labels,
+  while checksum-only `pinDigest`, workflow, and `renovate.json` updates remain dependency-only.
 
 ## License
 
