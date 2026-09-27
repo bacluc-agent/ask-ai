@@ -23,23 +23,26 @@ docker run --rm -it \
 config from, so the read-only mount keeps the container from writing to your host config.
 
 Available tags: `0.0.1` and `latest`. Renovate tracks the Alpine base image and the
-`aichat` version plus its SHA-256 checksum, and opens (and automerges) an update PR for
-both whenever a newer `aichat` release is at least 14 days old.
+`aichat` version plus its SHA-256 checksum. It opens and automerges dependency PRs for
+Alpine and `aichat` Dockerfile updates; workflow or `renovate.json` updates get dependency
+only and never bump the image version.
 
 ## Workflows
 
-- `Autorelease` (`.github/workflows/auto-release.yaml`): on every merge of a pull request
-  labelled `bump:patch`, `bump:minor` or `bump:major`, the
-  [pr-label-tag-action](https://github.com/projectsyn/pr-label-tag-action) creates the next
-  `v*` tag and dispatches `Release`.
+- `Autorelease` (`.github/workflows/auto-release.yaml`): `bump:patch`/`bump:minor`/`bump:major`
+  is the “user facing change” signal causing the
+  [pr-label-tag-action](https://github.com/projectsyn/pr-label-tag-action) to create the next
+  `v*` tag and dispatch `Release`. Only Dockerfile dependency updates (Alpine base image,
+  pinned `aichat` release + checksum) carry it; CI/workflow-only or `renovate.json`-only PRs
+  get dependency only and never create a tag, publish an image, or release.
 - `Release` (`.github/workflows/release.yaml`): triggered by a `v*` tag, builds the image
   for `linux/amd64` and publishes `ghcr.io/bacluc-agent/ask-ai:<version-without-v>` and
   `ghcr.io/bacluc-agent/ask-ai:latest`, then creates the GitHub release with a changelog
   built from the merged pull requests and their labels.
 - `CI` (`.github/workflows/ci.yaml`): validates `renovate.json`, builds the image, runs
   `aichat --version`, and repeats that under an arbitrary numeric user id.
-- Renovate ([`renovate.json`](renovate.json)) keeps the base image and the pinned `aichat`
-  release current.
+- Renovate ([`renovate.json`](renovate.json)) opens and automerges Alpine and pinned `aichat`
+  Dockerfile updates; workflow and `renovate.json` updates never bump the image version.
 
 ## License
 
