@@ -22,9 +22,9 @@ docker run --rm -it \
 `XDG_CONFIG_HOME=/cfg` together with the `/cfg/aichat` mount is what aichat reads its
 config from, so the read-only mount keeps the container from writing to your host config.
 
-Available tags: `0.0.1` and `latest`. Renovate opens and automerges update PRs for the
-Alpine base image and the `aichat` version plus its SHA-256 checksum after the 14-day
-`minimumReleaseAge`.
+Available tags: `0.0.1` and `latest`. Renovate tracks the Alpine base image and the
+`aichat` version plus its SHA-256 checksum, and opens (and automerges) an update PR for
+both whenever a newer `aichat` release is at least 14 days old.
 
 ## Workflows
 
