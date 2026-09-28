@@ -6,6 +6,7 @@
   "labels": ["dependency"],
   "packageRules": [
     {
+      "description": "Only the image definition is user facing, so only its dependency updates may bump the version",
       "matchUpdateTypes": ["major"],
       "matchFileNames": ["Dockerfile"],
       "labels": ["bump:major"]

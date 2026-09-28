@@ -32,10 +32,10 @@ both whenever a newer `aichat` release is at least 14 days old.
   `bump:major` label is the user-facing-change signal. On every merge of a pull request
   with one of those labels, the
   [pr-label-tag-action](https://github.com/projectsyn/pr-label-tag-action) creates the next
-  `v*` tag and dispatches `Release`. Only Dockerfile dependency updates for Alpine,
-  `AICHAT_VERSION` or `AICHAT_SHA256` get a bump label. Pull requests touching only
-  `.github/**` or `renovate.json` get `dependency` only, so they never tag, publish or
-  release.
+  `v*` tag and dispatches `Release`, which publishes an image. Only Dockerfile
+  dependency updates for Alpine and `AICHAT_VERSION` get a bump label.
+  Pull requests touching only `.github/**` or `renovate.json` get `dependency`
+  only, so they never tag, publish or release.
 - `Release` (`.github/workflows/release.yaml`): triggered by a `v*` tag, builds the image
   for `linux/amd64`, publishes `ghcr.io/bacluc-agent/ask-ai:<version-without-v>` and
   `ghcr.io/bacluc-agent/ask-ai:latest`, and creates the GitHub release with a changelog
